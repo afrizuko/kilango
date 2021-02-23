@@ -1,7 +1,7 @@
 package user
 
 import (
-	"github.com/audit/model"
+	"github.com/afrizuko/kilango/model"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/render"
 	"net/http"
@@ -26,7 +26,7 @@ func NewHandler(service model.UserService) *Handler {
 func DefaultHandler() *Handler {
 
 	handler := new(Handler)
-	handler.service = model.NewUserStub()
+	handler.service = model.NewUserServiceImpl()
 
 	handler.AddRoutes()
 	return handler

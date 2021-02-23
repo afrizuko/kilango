@@ -2,7 +2,7 @@ package user
 
 import (
 	"errors"
-	"github.com/audit/model"
+	"github.com/afrizuko/kilango/model"
 )
 
 type Stub struct {

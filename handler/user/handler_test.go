@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/audit/model"
+	"github.com/afrizuko/kilango/model"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"

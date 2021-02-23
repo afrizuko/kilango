@@ -3,7 +3,7 @@ package auth
 import (
 	"errors"
 	"fmt"
-	"github.com/audit/model"
+	"github.com/afrizuko/kilango/model"
 )
 
 type Stub struct {
@@ -29,6 +29,15 @@ func NewStub() *Stub {
 func (s *Stub) Authenticate(req model.AuthRequest) (model.User, error) {
 	if user, exists := s.users[req.Username]; exists && user.Password == req.Password {
 		return user, nil
+	}
+	return model.User{}, errors.New("user with specified credentials not found")
+}
+
+func (s *Stub) GetUserProfile(id uint) (model.User, error) {
+	for _, user := range s.users {
+		if user.ID == id {
+			return user, nil
+		}
 	}
 	return model.User{}, errors.New("user with specified credentials not found")
 }

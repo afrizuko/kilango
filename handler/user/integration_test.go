@@ -3,7 +3,7 @@ package user
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/audit/model"
+	"github.com/afrizuko/kilango/model"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
@@ -15,7 +15,7 @@ func Test_CreateGetUpdateDeleteUsers(t *testing.T) {
 	if testing.Short() {
 		t.Skip("Skipping integration tests")
 	}
-	handler = NewHandler(model.NewUserStub())
+	handler = NewHandler(model.NewUserServiceImpl())
 
 	res := httptest.NewRecorder()
 	handler.ServeHTTP(res, httptest.NewRequest("POST", "/", newUser(t, "peter")))

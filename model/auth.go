@@ -14,10 +14,12 @@ func (a AuthRequest) Bind(_ *http.Request) error {
 }
 
 type AuthResponse struct {
-	Token     string  `json:"token"`
-	ExpiresAt float32 `json:"expires_at"`
+	Token     string `json:"token"`
+	ExpiresAt int64  `json:"expires_at"`
+	TokenType string `json:"token_type"`
 }
 
 type AuthService interface {
 	Authenticate(req AuthRequest) (User, error)
+	GetUserProfile(id uint) (User, error)
 }

@@ -2,6 +2,7 @@ package model
 
 import (
 	"errors"
+	"github.com/afrizuko/kilango/util"
 	"gorm.io/gorm"
 	"log"
 )
@@ -12,7 +13,7 @@ type UserServiceImpl struct {
 	*gorm.DB
 }
 
-func NewUserStub() *UserServiceImpl {
+func NewUserServiceImpl() *UserServiceImpl {
 
 	// promote reusability
 	if userServiceImpl != nil {
@@ -24,7 +25,25 @@ func NewUserStub() *UserServiceImpl {
 	if err := userServiceImpl.DB.AutoMigrate(&User{}); err != nil {
 		log.Fatal(err)
 	}
+
+	userServiceImpl.SetupDefaultUser()
 	return userServiceImpl
+}
+
+func (s *UserServiceImpl) SetupDefaultUser() {
+
+	var user User
+	s.DB.Where("username=?", "SYSTEM").First(&user)
+
+	pin, _ := util.HashPin("SYSTEM")
+	if user.ID < 1 {
+		s.DB.Save(&User{
+			Name:     "SYSTEM ADMIN",
+			Username: "SYSTEM",
+			Password: pin,
+			Status:   "A",
+		})
+	}
 }
 
 func (s *UserServiceImpl) GetUsers(page, limit int) ([]User, error) {
