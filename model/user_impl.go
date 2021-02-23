@@ -6,17 +6,25 @@ import (
 	"log"
 )
 
+var userServiceImpl *UserServiceImpl
+
 type UserServiceImpl struct {
 	*gorm.DB
 }
 
 func NewUserStub() *UserServiceImpl {
-	stub := new(UserServiceImpl)
-	stub.DB = NewConnection()
-	if err := stub.DB.AutoMigrate(&User{}); err != nil {
+
+	// promote reusability
+	if userServiceImpl != nil {
+		return userServiceImpl
+	}
+
+	userServiceImpl := new(UserServiceImpl)
+	userServiceImpl.DB = NewConnection()
+	if err := userServiceImpl.DB.AutoMigrate(&User{}); err != nil {
 		log.Fatal(err)
 	}
-	return stub
+	return userServiceImpl
 }
 
 func (s *UserServiceImpl) GetUsers(page, limit int) ([]User, error) {

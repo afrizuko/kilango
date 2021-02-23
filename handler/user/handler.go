@@ -5,6 +5,7 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/render"
 	"net/http"
+	"os"
 	"strconv"
 )
 
@@ -18,17 +19,7 @@ func NewHandler(service model.UserService) *Handler {
 	handler := new(Handler)
 	handler.service = service
 
-	mux := chi.NewRouter()
-	mux.Use(render.SetContentType(render.ContentTypeJSON))
-
-	mux.Get("/", handler.GetUsers)
-	mux.Get("/{id}", handler.GetUser)
-	mux.Put("/{id}", handler.UpdateUser)
-	mux.Post("/", handler.CreateUser)
-	mux.Delete("/{id}", handler.DeleteUser)
-	mux.Delete("/{id}/purge", handler.PurgeUser)
-
-	handler.Handler = mux
+	handler.AddRoutes()
 	return handler
 }
 
@@ -37,18 +28,24 @@ func DefaultHandler() *Handler {
 	handler := new(Handler)
 	handler.service = model.NewUserStub()
 
-	mux := chi.NewRouter()
-	mux.Use(render.SetContentType(render.ContentTypeJSON))
-
-	mux.Get("/", handler.GetUsers)
-	mux.Get("/{id}", handler.GetUser)
-	mux.Put("/{id}", handler.UpdateUser)
-	mux.Post("/", handler.CreateUser)
-	mux.Delete("/{id}", handler.DeleteUser)
-	mux.Delete("/{id}/purge", handler.PurgeUser)
-
-	handler.Handler = mux
+	handler.AddRoutes()
 	return handler
+}
+
+func (h *Handler) AddRoutes() {
+	mux := chi.NewRouter()
+	if os.Getenv("STATE") != "prod" {
+		mux.Use(render.SetContentType(render.ContentTypeJSON))
+	}
+
+	mux.Get("/", h.GetUsers)
+	mux.Get("/{id}", h.GetUser)
+	mux.Put("/{id}", h.UpdateUser)
+	mux.Post("/", h.CreateUser)
+	mux.Delete("/{id}", h.DeleteUser)
+	mux.Delete("/{id}/purge", h.PurgeUser)
+
+	h.Handler = mux
 }
 
 func (h *Handler) GetUsers(writer http.ResponseWriter, request *http.Request) {
